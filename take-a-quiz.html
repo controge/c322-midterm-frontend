@@ -32,6 +32,8 @@
   let chosenQuiz = [];
   let questions = [];
   let questionArray = [];
+  let answerList = [];
+  let correctAnswers = [];
   let currQuestionIndex = 0;
   displayQuizzes();
 
@@ -61,7 +63,7 @@
       div.innerHTML = innerHtml;
       div.addEventListener("click", function(){
         chosenQuiz = quiz;
-        selectedQuiz(quiz.id);
+        selectedQuiz();
       });
       list.appendChild(div);
     }
@@ -73,7 +75,7 @@
     return result
   }
 
-  async function selectedQuiz(quizId){
+  async function selectedQuiz(){
     let list = document.getElementById("list");
     list.innerHTML = "";
     let quizQuestionIds = chosenQuiz.questionIds;
@@ -92,7 +94,6 @@
   }
 
   async function showQuestions(chosenQuiz){
-    let answerList = [];
     let currQuestion = chosenQuiz[currQuestionIndex];
     let list = document.getElementById("list");
     list.innerHTML = "";
@@ -135,14 +136,42 @@
       let nextButton = document.createElement("button");
       nextButton.textContent = "Next";
       nextButton.addEventListener("click", function(){
-        let form = document.forms[0];
-        let formData = new FormData(form);
-        let data = Object.fromEntries(formData);
-        let answer = data.answer;
-        console.log("DATA:" + data + "DATA ANSWER: " + data.answer);
-        answerList.push(answer);
         currQuestionIndex++;
         currQuestion = chosenQuiz[currQuestionIndex];
+        let form = document.forms[0];
+        let formData = new FormData(form);
+        console.log(form);
+        const labels = document.querySelectorAll('form label');
+
+        // Create an array to store the extracted label texts
+        const labelValues = [];
+
+        // Iterate through each label element and extract its text content
+        labels.forEach(label => {
+            labelValues.push(label.textContent);
+        });
+
+        // Now, labelValues array will contain the text of each label
+        console.log(labelValues);
+        // output as an object
+        let data = Object.fromEntries(formData);
+        console.log(data);
+        //answerList.push(data.q2Answer);
+        switch (data.q2Answer) {
+          case "A":
+            console.log(data.optionA);
+            answerList.push(labelValues[0]);
+            break;
+          case "B":
+            console.log(data.optionB);
+            answerList.push(labelValues[1]);
+            break;
+          case "C":
+            console.log(data.optionC);
+            answerList.push(labelValues[2]);
+            break;
+        }       
+        
         showQuestions(chosenQuiz);
       });
       list.appendChild(nextButton);
@@ -152,8 +181,39 @@
       let submitButton = document.createElement("button");
       submitButton.textContent = "Submit";
       submitButton.addEventListener("click", function(){
-        
-        console.log(answerList);
+        let form = document.forms[0];
+        let formData = new FormData(form);
+        const labels = document.querySelectorAll('form label');
+
+        // Create an array to store the extracted label texts
+        const labelValues = [];
+
+        // Iterate through each label element and extract its text content
+        labels.forEach(label => {
+            labelValues.push(label.textContent);
+        });
+
+        // Now, labelValues array will contain the text of each label
+        console.log(labelValues);
+        // output as an object
+        let data = Object.fromEntries(formData);
+        console.log(data);
+        //answerList.push(data.q2Answer);
+        switch (data.q2Answer) {
+          case "A":
+            console.log(data.optionA);
+            answerList.push(labelValues[0]);
+            break;
+          case "B":
+            console.log(data.optionB);
+            answerList.push(labelValues[1]);
+            break;
+          case "C":
+            console.log(data.optionC);
+            answerList.push(labelValues[2]);
+            break;
+        }       
+        // output as an object
         submitQuiz(answerList);
       });
       list.appendChild(submitButton);
@@ -162,11 +222,28 @@
   }
 
   function submitQuiz(answerList){
-    console.log("submitting quiz")
-    //get user answers from the form
-    console.log("answer list: "+answerList);
-    //send them to server
-    //let answerList = [];
+    let correct = 0;
+    populateCorrectAnswers(); 
+    console.log("Answers selected: " + answerList);
+    console.log("Correct answers: " + correctAnswers);
+    for(let i = 0; i < answerList.length; i++){
+      if(answerList[i] === correctAnswers[i]){
+        correct++;
+      }
+    }
+    let div = document.createElement("div");
+    div.innerHTML = `You completed the quiz ${chosenQuiz.title}`;
+    list.innerHTML = "";
+    list.appendChild(div);
+    let results = document.createElement("div");
+    results.innerHTML = `You scored ${correct} out of ${answerList.length}.`;
+    list.appendChild(results);    
+  }
+
+  function populateCorrectAnswers(){
+    for(let question of questionArray){
+      correctAnswers.push(question.answer);
+    }
   }
 
 
