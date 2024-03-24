@@ -3,9 +3,171 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Take a Quiz</title>
+
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="general.css">
+    <link rel="stylesheet" href="cards.css">
+	<link rel ="stylesheet" href="left-panel.css">
 </head>
 <body>
   
+    <ul class="topnav">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="add-question.html">Add questions</a></li>
+      <li><a href="make-a-quiz.html">Create a quiz</a></li>
+      <li><a class = "active" href="take-a-quiz.html">Take a quiz</a></li>
+      <li class="right"><a href="#about">About</a></li>
+	</ul>
+	<div id = "container">
+		<div id="list" class="cards"></div>
+	</div>
+	
+
 </body>
-</html>
+
+<script>
+  let host = "http://localhost:8080";
+  let quizzes = [];
+  let chosenQuiz = [];
+  let questions = [];
+  let questionArray = [];
+  let currQuestionIndex = 0;
+  displayQuizzes();
+
+  async function getAll() {
+    let response = await fetch(host + "/quizzes");
+    let result = await response.json();
+    return result;
+  }
+
+  async function displayQuizzes(){
+    if(quizzes.length == 0){
+      quizzes = await getAll();
+    }
+    let list = document.getElementById("list");
+    list.innerHTML = "";
+
+    for(let quiz of quizzes){
+      let div = document.createElement("div");
+      div.className = "card";
+      let innerHtml = `
+        <div class="container">
+          <h4><b>${quiz.id}</b></h4>
+          <p>${quiz.title}</p>
+          <p>${quiz.questionIds.length} questions</p>
+        </div>  
+      `
+      div.innerHTML = innerHtml;
+      div.addEventListener("click", function(){
+        chosenQuiz = quiz;
+        selectedQuiz(quiz.id);
+      });
+      list.appendChild(div);
+    }
+  }
+
+  async function getQuestions(){
+    let response = await fetch(host + "/questions");
+    let result = await response.json();
+    return result
+  }
+
+  async function selectedQuiz(quizId){
+    let list = document.getElementById("list");
+    list.innerHTML = "";
+    let quizQuestionIds = chosenQuiz.questionIds;
+    if(questions.length == 0){
+      questions = await getQuestions();
+    }
+    
+    for(let question of questions){
+      if(quizQuestionIds.includes(question.id)){
+        //console.log(typeof chosenQuiz, chosenQuiz);
+        questionArray.push(question);
+      }
+    }
+
+    showQuestions(questionArray);
+  }
+
+  async function showQuestions(chosenQuiz){
+    let answerList = [];
+    let currQuestion = chosenQuiz[currQuestionIndex];
+    let list = document.getElementById("list");
+    list.innerHTML = "";
+    let div = document.createElement("div");
+    div.className = "card";
+    let innerHtml = `
+    	 
+       <img src="http://localhost:8080/questions/${currQuestion.id}/image" alt="question" style="width:100%">
+       <div class="container">
+       <h4><b>${currQuestion.id}</b></h4> 
+       <p>${currQuestion.description}</p>
+       <form>
+         <input type="radio" id="q${currQuestion.id}ptionA" name="q2Answer" value="A">
+         <label for="q${currQuestion.id}ptionA">${currQuestion.choices[0]}</label><br>
+ 
+         <input type="radio" id="q${currQuestion.id}ptionB" name="q2Answer" value="B">
+         <label for="q${currQuestion.id}ptionB">${currQuestion.choices[1]}</label><br>
+ 
+         <input type="radio" id="q${currQuestion.id}ptionC" name="q2Answer" value="C">
+         <label for="q${currQuestion.id}ptionC">${currQuestion.choices[2]}</label><br>       
+       </form> 
+       </div>
+
+         `;
+    div.innerHTML = innerHtml;
+    list.appendChild(div);
+    //previous button
+    if(currQuestionIndex > 0){
+      let prevButton = document.createElement("button");
+      prevButton.textContent = "Previous";
+      prevButton.addEventListener("click", function(){
+        currQuestionIndex--;
+        currQuestion = chosenQuiz[currQuestionIndex];
+        showQuestions(chosenQuiz);
+      });
+      list.appendChild(prevButton);
+    }
+    //next button
+    if(currQuestionIndex < chosenQuiz.length - 1){
+      let nextButton = document.createElement("button");
+      nextButton.textContent = "Next";
+      nextButton.addEventListener("click", function(){
+        let form = document.forms[0];
+        let formData = new FormData(form);
+        let data = Object.fromEntries(formData);
+        let answer = data.answer;
+        console.log("DATA:" + data + "DATA ANSWER: " + data.answer);
+        answerList.push(answer);
+        currQuestionIndex++;
+        currQuestion = chosenQuiz[currQuestionIndex];
+        showQuestions(chosenQuiz);
+      });
+      list.appendChild(nextButton);
+    }
+    //submit button
+    if(currQuestionIndex == chosenQuiz.length -1){
+      let submitButton = document.createElement("button");
+      submitButton.textContent = "Submit";
+      submitButton.addEventListener("click", function(){
+        
+        console.log(answerList);
+        submitQuiz(answerList);
+      });
+      list.appendChild(submitButton);
+    }
+    
+  }
+
+  function submitQuiz(answerList){
+    console.log("submitting quiz")
+    //get user answers from the form
+    console.log("answer list: "+answerList);
+    //send them to server
+    //let answerList = [];
+  }
+
+
+</script>

@@ -3,9 +3,215 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Make a Quiz</title>
+
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="general.css">
+    <link rel="stylesheet" href="cards.css">
+	<link rel ="stylesheet" href="left-panel.css">
 </head>
 <body>
   
+    <ul class="topnav">
+      <li><a  href="index.html">Home</a></li>
+      <li><a  href="add-question.html">Add questions</a></li>
+      <li><a class = "active" href="make-a-quiz.html">Create a quiz</a></li>
+      <li><a href="take-a-quiz.html">Take a quiz</a></li>
+      <li class="right"><a href="#about">About</a></li>
+	</ul>
+	<div id = "container">
+		<div id="list" class="left-panel"></div>
+
+		<div class = "right-panel" id = "options">
+
+			<div>If you want to remove a question from the quiz, you can click on the question here and it will be removed from the quiz.</div>
+			</br>	
+		</div>
+	</div>
+	
+
 </body>
+
+<script>
+
+      let host = "http://localhost:8080";
+      let questions = [];
+	  let quiz = {
+		  "id" : 0,
+		  "title": "New Quiz",
+		  "questionIds": []
+	  };
+      displayTheQuestions();
+	  let selectedQuestions = [];
+	  let qnum = 0;
+	  let options = document.getElementById("options");
+	  let qselected = document.createElement("div");
+	  qselected.innerHtml = "<div class = right-panel>Questions selected: (" + qnum+"questions) </div>";
+	  options.appendChild(qselected);
+      async function getAll() {
+        let response = await fetch(host + "/questions");
+        let result = await response.json();
+        return result;
+      }
+
+	async function displayTheQuestions() {
+    	if (questions.length == 0) {
+          questions = await getAll();
+        }
+
+        let list = document.getElementById("list");
+        list.innerHTML = "";
+
+        for (let question of questions) {
+          let div = document.createElement("div");
+          div.className = "card";
+          let innerHtml = `
+    	 
+			<img src="http://localhost:8080/questions/${question.id}/image" alt="question" style="width:100%">
+			<div class="container">
+			<h4><b>${question.id}</b></h4> 
+			<p>${question.description}</p>
+			<form>
+				<input type="radio" id="q${question.id}ptionA" name="q2Answer" value="A">
+				<label for="q${question.id}ptionA">${question.choices[0]}</label><br>
+
+				<input type="radio" id="q${question.id}ptionB" name="q2Answer" value="B">
+				<label for="q${question.id}ptionB">${question.choices[1]}</label><br>
+
+				<input type="radio" id="q${question.id}ptionC" name="q2Answer" value="C">
+				<label for="q${question.id}ptionC">${question.choices[2]}</label><br>       
+			</form> 
+			</div>
+		
+				`;
+			div.innerHTML = innerHtml;
+			list.appendChild(div);
+
+			options.innerHTML = "";
+			let header = document.createElement("h2");
+			header.textContent = `The new quiz - ${selectedQuestions.length} questions selected`;
+						
+			options.appendChild(header);
+				
+			let quizName = document.createElement("input");
+			quizName.type = "text";
+			quizName.placeholder = "Quiz Name";
+			options.appendChild(quizName);
+
+			let save = document.createElement("button");
+			save.textContent = "Save your changes";
+			save.addEventListener("click", function(){
+				saveQuiz(quizName);
+				console.log(`updated quiz name to ${quiz.title}`);
+			});
+			options.appendChild(save);
+			
+			let sendQuiz = document.createElement("button");
+			sendQuiz.textContent = "Save this and start a new quiz.";
+			sendQuiz.addEventListener("click",async function(){
+				alert("You haven't added any questions yet!");
+			});
+			options.appendChild(sendQuiz);
+				
+			div.addEventListener('click', function(){
+				if(!selectedQuestions.includes(question)){
+					selectedQuestions.push(question);
+					console.log("appended" + question.id);
+					quiz.questionIds.push(question.id);
+					console.log(quiz.questionIds);
+					options.innerHTML = "";
+					let header = document.createElement("h2");
+					header.textContent = `The new quiz - ${selectedQuestions.length} questions selected`;
+						
+					options.appendChild(header);
+				
+					let quizName = document.createElement("input");
+					quizName.type = "text";
+					quizName.placeholder = "Quiz Name";
+					options.appendChild(quizName);
+			
+					let save = document.createElement("button");
+					save.textContent = "Save your changes";
+					save.addEventListener("click", function(){
+						saveQuiz(quizName);
+					});
+			
+					options.appendChild(save);
+
+					let sendQuiz = document.createElement("button");
+					sendQuiz.textContent = "Save this and start a new quiz.";
+					sendQuiz.addEventListener("click",async function(){
+						pushQuiz();
+					});
+					options.appendChild(sendQuiz);
+							
+					selectedQuestions.forEach(selectedQuestion => {
+						let selectedDiv = document.createElement("div");
+						selectedDiv.className = "card";
+						selectedDiv.innerHTML = `
+						<img src="http://localhost:8080/questions/${selectedQuestion.id}/image" alt="question" style="width:100%">
+						<div class="container">
+							<h4><b>${selectedQuestion.id}</b></h4> 
+							<p>${selectedQuestion.description}</p>
+							<form>
+								<input type="radio" id="q${selectedQuestion.id}ptionA" name="q${selectedQuestion.id}Answer" value="A">
+								<label for="q${selectedQuestion.id}ptionA">${selectedQuestion.choices[0]}</label><br>
+
+								<input type="radio" id="q${selectedQuestion.id}ptionB" name="q${selectedQuestion.id}Answer" value="B">
+								<label for="q${selectedQuestion.id}ptionB">${selectedQuestion.choices[1]}</label><br>
+
+								<input type="radio" id="q${selectedQuestion.id}ptionC" name="q${selectedQuestion.id}Answer" value="C">
+								<label for="q${selectedQuestion.id}ptionC">${selectedQuestion.choices[2]}</label><br>       
+							</form> 
+							</div>
+						`;
+						selectedDiv.addEventListener("click", function(){
+							let index = selectedQuestions.indexOf(selectedQuestion);
+							if(index !== -1){
+								selectedQuestions.splice(index, 1);
+							}
+						});
+
+						options.appendChild(selectedDiv);
+					});
+				}
+			});
+    	}
+	}
+
+	function saveQuiz(quizName){
+		let newName = quizName.value;
+		quiz.title = newName;
+		console.log(`updated quiz name to ${quiz.title}`);
+	}
+
+	async function pushQuiz(){
+		let message = "";
+
+		let request = {
+		method: "POST",
+		headers: {
+		"Content-Type": "application/json",
+			},
+		body: JSON.stringify(quiz),
+		};
+
+		let response = await fetch(host + "/quizzes", request);
+		if (response.status == 200) {
+			let id = await response.json();
+			message = "The quiz was added successfully!";
+		} else {
+			console.log(response);
+			message = "Something went wrong! Quiz data could not be saved.";
+		}
+		// alert(message);
+		location.href = "make-a-quiz.html";
+	}
+
+
+
+	  
+
+
+</script>
 </html>

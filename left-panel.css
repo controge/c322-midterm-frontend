@@ -1,0 +1,24 @@
+.left-panel {
+    float: left;
+    width: 50%;
+	display: grid;
+
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+  grid-auto-rows: auto;
+
+  grid-gap: 1rem;
+}
+
+
+.right-panel {
+    float: right;
+    width: 50%;
+	display: grid;
+
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+  grid-auto-rows: auto;
+
+  grid-gap: 1rem;
+}
