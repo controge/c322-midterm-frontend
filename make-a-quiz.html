@@ -168,9 +168,10 @@
 						`;
 						selectedDiv.addEventListener("click", function(){
 							let index = selectedQuestions.indexOf(selectedQuestion);
-							if(index !== -1){
+							if (index > -1){
 								selectedQuestions.splice(index, 1);
 							}
+							options.removeChild(selectedDiv);
 						});
 
 						options.appendChild(selectedDiv);
