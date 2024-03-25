@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="navbar.css">
     <link rel="stylesheet" href="general.css">
     <link rel="stylesheet" href="cards.css">
-	<link rel ="stylesheet" href="left-panel.css">
+	<link rel="stylesheet" href="left-panel.css">
 </head>
 <body>
   
@@ -89,7 +89,7 @@
 
 			options.innerHTML = "";
 			let header = document.createElement("h2");
-			header.textContent = `The new quiz - ${selectedQuestions.length} questions selected`;
+			header.textContent = `${quiz.title} (${selectedQuestions.length} questions)`;
 						
 			options.appendChild(header);
 				
@@ -121,14 +121,14 @@
 					console.log(quiz.questionIds);
 					options.innerHTML = "";
 					let header = document.createElement("h2");
-					header.textContent = `The new quiz - ${selectedQuestions.length} questions selected`;
+					header.textContent = `${quiz.title} (${selectedQuestions.length} questions)`;
 						
-					options.appendChild(header);
+					//options.appendChild(header);
 				
 					let quizName = document.createElement("input");
 					quizName.type = "text";
 					quizName.placeholder = "Quiz Name";
-					options.appendChild(quizName);
+					header.appendChild(quizName);
 			
 					let save = document.createElement("button");
 					save.textContent = "Save your changes";
@@ -136,14 +136,15 @@
 						saveQuiz(quizName);
 					});
 			
-					options.appendChild(save);
+					header.appendChild(save);
 
 					let sendQuiz = document.createElement("button");
 					sendQuiz.textContent = "Save this and start a new quiz.";
 					sendQuiz.addEventListener("click",async function(){
 						pushQuiz();
 					});
-					options.appendChild(sendQuiz);
+					header.appendChild(sendQuiz);
+					options.appendChild(header);
 							
 					selectedQuestions.forEach(selectedQuestion => {
 						let selectedDiv = document.createElement("div");
@@ -207,10 +208,6 @@
 		// alert(message);
 		location.href = "make-a-quiz.html";
 	}
-
-
-
-	  
 
 
 </script>

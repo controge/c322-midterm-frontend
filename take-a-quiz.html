@@ -12,7 +12,7 @@
 </head>
 <body>
   
-    <ul class="topnav">
+    <ul class="topnav" id="navbar">
       <li><a href="index.html">Home</a></li>
       <li><a href="add-question.html">Add questions</a></li>
       <li><a href="make-a-quiz.html">Create a quiz</a></li>
@@ -82,6 +82,8 @@
     if(questions.length == 0){
       questions = await getQuestions();
     }
+    let navbar = document.getElementById("navbar");
+    navbar.innerHTML = "";
     
     for(let question of questions){
       if(quizQuestionIds.includes(question.id)){
@@ -170,6 +172,9 @@
             console.log(data.optionC);
             answerList.push(labelValues[2]);
             break;
+          default:
+            answerList.push("none");
+            break;
         }       
         
         showQuestions(chosenQuiz);
@@ -212,6 +217,9 @@
             console.log(data.optionC);
             answerList.push(labelValues[2]);
             break;
+          default:
+            answerList.push("none");
+            break;
         }       
         // output as an object
         submitQuiz(answerList);
@@ -236,8 +244,16 @@
     list.innerHTML = "";
     list.appendChild(div);
     let results = document.createElement("div");
-    results.innerHTML = `You scored ${correct} out of ${answerList.length}.`;
+    results.innerHTML = `You scored ${correct} out of ${correctAnswers.length}.`;
     list.appendChild(results);    
+    let navbar = document.getElementById("navbar");
+    navbar.innerHTML = `<ul class="topnav" id="navbar">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="add-question.html">Add questions</a></li>
+      <li><a href="make-a-quiz.html">Create a quiz</a></li>
+      <li><a class = "active" href="take-a-quiz.html">Take a quiz</a></li>
+      <li class="right"><a href="#about">About</a></li>
+	</ul>`;
   }
 
   function populateCorrectAnswers(){
