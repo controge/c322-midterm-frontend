@@ -22,3 +22,13 @@
 
   grid-gap: 1rem;
 }
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.buttons button{
+  padding: 10px 20px;
+}

@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="navbar.css">
     <link rel="stylesheet" href="general.css">
-    <link rel="stylesheet" href="cards.css">
+    <link rel="stylesheet" href="takingquizcards.css">
 	<link rel ="stylesheet" href="left-panel.css">
 </head>
 <body>
@@ -27,7 +27,7 @@
 </body>
 
 <script>
-  let host = "https://midterm-controge.onrender.com";
+  let host = "http://localhost:8080";
   let quizzes = [];
   let chosenQuiz = [];
   let questions = [];
@@ -103,7 +103,7 @@
     div.className = "card";
     let innerHtml = `
     	 
-       <img src="https://midterm-controge.onrender.com/questions/${currQuestion.id}/image" alt="question" style="width:100%">
+       <img src="http://localhost:8080/questions/${currQuestion.id}/image" alt="question" style="width:100%">
        <div class="container">
        <h4><b>${currQuestion.id}</b></h4> 
        <p>${currQuestion.description}</p>
@@ -125,6 +125,7 @@
     //previous button
     if(currQuestionIndex > 0){
       let prevButton = document.createElement("button");
+      prevButton.className = "buttons";
       prevButton.textContent = "Previous";
       prevButton.addEventListener("click", function(){
         currQuestionIndex--;
@@ -136,6 +137,7 @@
     //next button
     if(currQuestionIndex < chosenQuiz.length - 1){
       let nextButton = document.createElement("button");
+      nextButton.className = "buttons";
       nextButton.textContent = "Next";
       nextButton.addEventListener("click", function(){
         currQuestionIndex++;
