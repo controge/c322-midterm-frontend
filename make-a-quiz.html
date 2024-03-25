@@ -34,7 +34,7 @@
 
 <script>
 
-      let host = "http://localhost:8080";
+      let host = "https://midterm-controge.onrender.com";
       let questions = [];
 	  let quiz = {
 		  "id" : 0,
@@ -67,7 +67,7 @@
           div.className = "card";
           let innerHtml = `
     	 
-			<img src="http://localhost:8080/questions/${question.id}/image" alt="question" style="width:100%">
+			<img src="https://midterm-controge.onrender.com/questions/${question.id}/image" alt="question" style="width:100%">
 			<div class="container">
 			<h4><b>${question.id}</b></h4> 
 			<p>${question.description}</p>
@@ -150,7 +150,7 @@
 						let selectedDiv = document.createElement("div");
 						selectedDiv.className = "card";
 						selectedDiv.innerHTML = `
-						<img src="http://localhost:8080/questions/${selectedQuestion.id}/image" alt="question" style="width:100%">
+						<img src="https://midterm-controge.onrender.com/questions/${selectedQuestion.id}/image" alt="question" style="width:100%">
 						<div class="container">
 							<h4><b>${selectedQuestion.id}</b></h4> 
 							<p>${selectedQuestion.description}</p>
