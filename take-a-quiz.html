@@ -27,7 +27,7 @@
 </body>
 
 <script>
-  let host = "https://midterm-controge.onrender.com";
+  let host = "http://localhost:8080";
   let quizzes = [];
   let chosenQuiz = [];
   let questions = [];
@@ -103,7 +103,7 @@
     div.className = "card";
     let innerHtml = `
     	 
-       <img src="https://midterm-controge.onrender.com/questions/${currQuestion.id}/image" alt="question" style="width:100%">
+       <img src="http://localhost:8080/questions/${currQuestion.id}/image" alt="question" style="width:100%">
        <div class="container">
        <h4><b>${currQuestion.id}</b></h4> 
        <p>${currQuestion.description}</p>
@@ -147,17 +147,13 @@
         console.log(form);
         const labels = document.querySelectorAll('form label');
 
-        // Create an array to store the extracted label texts
         const labelValues = [];
 
-        // Iterate through each label element and extract its text content
         labels.forEach(label => {
             labelValues.push(label.textContent);
         });
 
-        // Now, labelValues array will contain the text of each label
         console.log(labelValues);
-        // output as an object
         let data = Object.fromEntries(formData);
         console.log(data);
         //answerList.push(data.q2Answer);
@@ -192,17 +188,13 @@
         let formData = new FormData(form);
         const labels = document.querySelectorAll('form label');
 
-        // Create an array to store the extracted label texts
         const labelValues = [];
 
-        // Iterate through each label element and extract its text content
         labels.forEach(label => {
             labelValues.push(label.textContent);
         });
 
-        // Now, labelValues array will contain the text of each label
         console.log(labelValues);
-        // output as an object
         let data = Object.fromEntries(formData);
         console.log(data);
         //answerList.push(data.q2Answer);
